@@ -18,6 +18,8 @@ import kafka.utils.ZkUtils._
 
 /**
  * Created by dbort on 20.10.2015.
+ * Kafka Producer application reads files from specified directory and forwards contents line by line into Kafka broker.
+ * Each file is being read in a separate thread. Thread pool size depends on a target Kafka topic partition number property.
  */
 object KProdDriver {
 

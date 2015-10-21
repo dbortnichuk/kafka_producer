@@ -6,6 +6,7 @@ import scala.concurrent.ExecutionContext
 
 /**
  * Created by dbort on 20.10.2015.
+ * Object to hold constants and utility methods.
  */
 package object kafka {
 
