@@ -38,7 +38,7 @@ Application can be configured from command line providing parameters
 ```
 * --zkhost - is an optional property, defines zookeeper host Kafka broker runs on, default: localhost:2181, example:
 ```
---host localhost:2181
+--zkhost localhost:2181
 ```
 * *--help* - can be used to view usage options from command line.
 
