@@ -2,65 +2,49 @@ Kafka Producer
 ===============
 
 ### Description
-*Merge small text files into large files.*
+*Read files contents and forward to Kafka*
 
-File Aggregator is a Spark job application which allows to merge small text files in order to resolve [Hadoop small files problem](http://blog.cloudera.com/blog/2009/02/the-small-files-problem/) . Input file contents are being copied into output files and delimited by a linebreak(default). 
+Kafka Producer application reads files from specified directory and forwards contents line by line into Kafka broker.
+Each file is being read in a separate thread. Thread pool size depends on a target Kafka topic partition number property.  
 
 ### Requirements
 Tested on:
 
 * Maven 3.3.3 (project assembly)
-* CDH 5.4.2 & Spark 1.3.0 (job runtime)
+* CDH 5.4.2 (runtime)
 
 
 ### Assembly
-Package with Maven.  
+Assembly with Maven.  
 
 ```
-mvn package
+mvn clean install
 ```
 
 ### Configure
 Application can be configured from command line providing parameters
 
-* **-i** - is a required property, specify it to point out directory URI small files to be read and aggregated into combined files, example:
+* **--brokers** - is a required property, specify it as comma separated list to point out brokers, example:
 ```
--i hdfs://localhost/user/examples/files
+--brokers broker1_host:port,broker2_host:port
 ```
-* **-o** - is a required property, specify it to point out directory URI to upload combined files to, **NOTE:** directory should not exist, it will be created as part of the job, example:
+* **--topics** - is a required property, specify it as comma separated list to point out topics messages will be produced to, example:
 ```
--o hdfs://localhost/user/examples/files-out
+--topics topic1,topic2
 ```
-* -m - is a optional property, specify it to point out spark master URI, by default will be governed by --master option of spark-submit command which would be required in case not providing it to File Aggregator application, example: 
+* **--inputDir** - is a required property, specify it to point out root directory files should be read from, example:
 ```
--m spark://quickstart.cloudera:7077
+--inputDir hdfs://quickstart.cloudera:8020/user/examples/
 ```
-* -n - is a optional property, Application display name, default: File Aggregator , example:
+* --zkhost - is an optional property, defines zookeeper host Kafka broker runs on, default: localhost:2181, example:
 ```
--n "File Agg"
-```
-
-* -f - is an optional property, Max size of single output file in Mb, default: 128 , example:
-```
--f 64
-```
-* -b - is an optional property, HDFS file block size in Mb, default: governed by dfs.blocksize Hadoop option , example:
-```
--b 64
-```
-* -d - is an optional property, delimiter to separate content from small input files in combined files, default: "linebreak" , example:
-```
--d %
-```
-* -r - is an optional property, enables recursive file reads in nested input directories, default: true , example:
-```
--r false
+--host localhost:2181
 ```
 * *--help* - can be used to view usage options from command line.
 
 ### Run
-Run application by submitting it to Spark via command line, providing mandatory parameters, example:
+Run application via command line, providing mandatory parameters, example:
 
 ``` 
-spark-submit --class "ua.softserve.spark.aggregator.AggDriver" --master local jars/file_aggregator-1.0.jar -i /inDir -o /outDir -n "File Agg" -f 64 -b 64 -r false
+hadoop jar jars/kafka_producer-1.0.jar com.cisco.mantl.kafka.KProdDriver --brokers localhost:9092 --topic test --inputDir hdfs://quickstart.cloudera:8020/user/examples1/files --zkhost localhost:2181
 ```
